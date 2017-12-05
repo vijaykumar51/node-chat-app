@@ -3,6 +3,8 @@ const http = require("http");
 const path = require("path");
 const socketIO = require("socket.io");
 
+const { generateMessage } = require("./utils/message");
+
 const publicPath = path.join(__dirname, "../public");
 const port = process.env.PORT || 3000;
 var app = express();
@@ -15,12 +17,19 @@ var io = socketIO(server);
 io.on("connection", (socket) => {
 	console.log("Connection established");
 
-	socket.emit("newEmail", {
-		from: "user1@gmail.com"
-	});
+	socket.emit("newMessage", {
+		from: "Admin",
+		text: "Welcome user"
+	})
 
-	socket.on("createEmail", (email) => {
-		console.log("createEmail", email);
+	socket.broadcast.emit("newMessage", {
+		from: "Admin",
+		text: "New user joined"
+	})
+
+	socket.on("createMessage", (message) => {
+		console.log("createMessage", message);
+		io.emit("newMessage", generateMessage(message.from, message.text))
 	})
 
 	socket.on("disconnect", () => {
