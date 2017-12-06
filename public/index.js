@@ -6,9 +6,15 @@ socket.on("connect", function () {
 socket.on("newMessage", function (message) {
 	console.log("newMessage", message);
 	var formattedTime = moment(message.createdAt).format("h:mm a");
-	var newMessageElement = $("<li></li>");
-	newMessageElement.text(`${message.from} ${formattedTime}: ${message.text}`);
-	$("#messages").append(newMessageElement);
+
+	var template = $("#message-template").html();
+	var html = Mustache.render(template, {
+		from: message.from,
+		text: message.text,
+		createdAt: formattedTime
+	})
+
+	$("#messages").append(html);
 })
 
 socket.on("disconnect", function () {
