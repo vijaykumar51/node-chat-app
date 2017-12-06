@@ -5,8 +5,9 @@ socket.on("connect", function () {
 
 socket.on("newMessage", function (message) {
 	console.log("newMessage", message);
+	var formattedTime = moment(message.createdAt).format("h:mm a");
 	var newMessageElement = $("<li></li>");
-	newMessageElement.text(`${message.from}: ${message.text}`);
+	newMessageElement.text(`${message.from} ${formattedTime}: ${message.text}`);
 	$("#messages").append(newMessageElement);
 })
 
